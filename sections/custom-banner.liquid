@@ -1,0 +1,278 @@
+{% comment %}
+  Custom Banner Section for Shopify
+{% endcomment %}
+
+<style>
+@keyframes fadeInScale {
+    from {
+        transform: scale(0);
+    }
+    to {
+        transform: scale(1);
+    }
+  }
+
+  @keyframes fadeInTop {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+  }
+
+  @keyframes fadeInBottom {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+  }
+
+  .custom-banner {
+    background-color: #e5dcd5;
+    box-shadow: inset 0 0 200px hsla(0,0%,0%,.1);
+    background:
+      linear-gradient(
+        #d0a864,
+        transparent
+      ),
+      linear-gradient(
+        250deg,
+        #ffffff,
+        transparent
+      ),
+      linear-gradient(
+        -90deg,
+        #e5dcd5,
+        transparent
+      );
+    background-blend-mode: screen;
+    width: 70%; /* per desktop */
+    height: 400px;
+    margin: 10px auto;
+    display: flex; 
+    align-items: center;
+    opacity: 0.8;
+    overflow: hidden;
+    border-radius: 20px;
+    flex-direction: row; /* Imposta la direzione principale come riga */
+    animation: fadeInScale 1s forwards;
+  }
+
+  .banner-image-block {
+    flex: 0 0 60%; /* Imposta la larghezza a 40% per desktop */
+    display: flex;
+    flex-direction: column; /* Organizza i contenuti in colonna */
+    justify-content: space-between; /* Distribuzione dello spazio tra l'immagine e le icone */
+    align-items: center;
+  }
+
+  .banner-image-block img {
+    max-width: 90%;
+    max-height: 90%;
+    opacity: 0;  /* Imposta l'opacità iniziale a 0 */
+    animation: fadeInTop 2s forwards;
+    animation-delay: 0.5s;  /* Ritardo di 0,5 secondi */
+  }
+
+  .banner-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 10px; 
+    animation: fadeInBottom 2.5s forwards;
+  }
+
+  .icon-group {
+    display: flex;
+    justify-content: space-between; /* Centra le icone orizzontalmente */
+    align-items: center; /* Centra le icone verticalmente */
+    margin-top: 0px; /* Aggiunto margine tra il testo e le icone */
+    padding: 0 10px; /* Aggiunto padding ai lati per mantenere distanza dai bordi */
+  }
+
+  .icon-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center; /* Centra il testo rispetto all'icona */
+    margin: 0 5px;
+    animation: fadeInRight 2s forwards;
+  }
+
+  .icon-item img {
+    width: 50px;
+    height: auto;
+    border-radius: 50%;
+    max-width: 100%;  /* per assicurarsi che l'immagine non superi il suo contenitore */
+    display: block;   /* per rimuovere spazi extra dall'alto e dal basso dell'immagine */
+    margin-bottom: -10px;  /* Riduce lo spazio tra l'immagine e il testo sottostante. */
+  }
+
+  .custom-banner-button {
+    margin: 15px auto 0;
+    padding: 10px 20px;
+    background-color: #d0a864;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  @media (max-width: 768px) {
+    .custom-banner {
+      width: 97%;
+      height: auto;
+      flex-direction: column; /* Su mobile, organizza tutto in colonna */
+
+    }
+    
+ .banner-image-block {
+        padding-top: 50px; /* Spazio aggiuntivo sopra l'immagine */
+    }
+  
+    .banner-content {
+      width: 100%;
+      padding: 5px;
+      text-align: center;
+    }
+  
+    .icon-group {
+      margin-top: 10px;
+    }
+  
+    .icon-item {
+      margin: 0 5px;
+    }
+  }
+</style>
+
+<div class="custom-banner">
+  <div class="banner-image-block">
+    <img src="{{ section.settings.banner_image | img_url: 'large' }}" alt="Banner Image">
+    <div class="icon-group">
+      <div class="icon-item">
+        <img src="{{ section.settings.icon1_image | img_url: '200x200' }}" alt="Icon 1">
+        <p>{{ section.settings.icon1_text }}</p>
+      </div>
+      <div class="icon-item">
+        <img src="{{ section.settings.icon2_image | img_url: '200x200' }}" alt="Icon 2">
+        <p>{{ section.settings.icon2_text }}</p>
+      </div>
+      <div class="icon-item">
+        <img src="{{ section.settings.icon3_image | img_url: '200x200' }}" alt="Icon 3">
+        <p>{{ section.settings.icon3_text }}</p>
+      </div>
+      <div class="icon-item">
+        <img src="{{ section.settings.icon4_image | img_url: '200x200' }}" alt="Icon 4">
+        <p>{{ section.settings.icon4_text }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="banner-content">
+    {{ section.settings.html_content }}
+<a href="{{ section.settings.button_link }}" target="_blank">
+    <button class="custom-banner-button">{{ section.settings.button_text }}</button>
+</a>  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Banner personalizzato",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "html_content",
+      "label": "Contenuto HTML del banner",
+      "default": "<p>Inserisci il tuo codice HTML qui</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "banner_image",
+      "label": "Immagine del banner"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon1_image",
+      "label": "Icona 1"
+    },
+    {
+      "type": "textarea",
+      "id": "icon1_text",
+      "label": "Testo Icona 1",
+      "default": "Icona 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon2_image",
+      "label": "Icona 2"
+    },
+    {
+      "type": "textarea",
+      "id": "icon2_text",
+      "label": "Testo Icona 2",
+      "default": "Icona 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon3_image",
+      "label": "Icona 3"
+    },
+    {
+      "type": "textarea",
+      "id": "icon3_text",
+      "label": "Testo Icona 3",
+      "default": "Icona 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon4_image",
+      "label": "Icona 4"
+    },
+    {
+      "type": "textarea",
+      "id": "icon4_text",
+      "label": "Testo Icona 4",
+      "default": "Icona 4"
+    },
+    {
+      "type": "textarea",
+      "id": "button_text",
+      "label": "Testo del bottone",
+      "default": "Clicca qui"
+    },
+{
+  "type": "text",
+  "id": "button_link",
+  "label": "URL del bottone",
+  "default": "https://www.esempio.com"
+}
+  ],
+  "presets": [
+    {
+      "name": "Banner predefinito",
+      "category": "Personalizzato"
+    }
+  ]
+}
+{% endschema %}
+

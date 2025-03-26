@@ -1,0 +1,287 @@
+{% schema %}
+{
+  "name": "Menu Verticale",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Impostazioni Menu"
+    },
+    {
+      "type": "text",
+      "id": "section_title",
+      "label": "Titolo della Sezione",
+      "default": "Il nostro menu verticale"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "menu_item",
+      "name": "Voce del Menu",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "item_image",
+          "label": "Immagine"
+        },
+        {
+          "type": "text",
+          "id": "item_title",
+          "label": "Titolo",
+          "default": "Nome voce"
+        },
+        {
+          "type": "text",
+          "id": "item_alt_text",
+          "label": "Testo Alternativo (Alt Text)",
+          "default": "Descrizione immagine",
+          "info": "Descrivi l'immagine in modo chiaro per migliorare l'accessibilità."
+        },
+        {
+          "type": "url",
+          "id": "item_link",
+          "label": "Link",
+          "info": "Inserisci il link della pagina o del prodotto"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Menu Verticale con Immagini",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
+
+<div class="menu-vertical_M23">
+  <h2>{{ section.settings.section_title }}</h2>
+  <div class="menu-list_M23">
+    {% for block in section.blocks %}
+      <a href="{{ block.settings.item_link }}" aria-label="{{ block.settings.item_title }}" class="card-vertical_M23" style="text-decoration: none; color: inherit;">
+        <div class="image-box-vertical_M23">
+          {% if block.settings.item_image %}
+            <img src="{{ block.settings.item_image | img_url: '600x' | format: 'webp' }}" 
+                 alt="{{ block.settings.item_alt_text | default: 'Immagine del menu' | escape }}" 
+                 loading="lazy"
+                 srcset="{{ block.settings.item_image | img_url: '1200x' | format: 'webp' }} 2x">
+          {% else %}
+            <div class="no-image">Immagine non disponibile</div>
+          {% endif %}
+        </div>
+        <!-- BOX TESTO CENTRATO E ADATTIVO -->
+        <div class="text-box-vertical_M23">
+          <span class="text-content-vertical_M23">{{ block.settings.item_title }}</span>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+/* Stile Generale */
+.menu-vertical_M23 {
+  text-align: center;
+  padding: 5px;
+  max-width: 90%; /* Larghezza massima del 90% della viewport */
+  margin: 0 auto; /* Centra il layout */
+}
+
+.menu-list_M23 {
+  display: flex;
+  flex-direction: column; /* Impila i box verticalmente */
+  gap: 20px; /* Spazio tra i box */
+}
+
+/* Card con rapporto di aspetto 2:1 */
+.card-vertical_M23 {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 1; /* Rapporto di aspetto 2:1 */
+  border-radius: 20px; /* Bordo arrotondato proporzionale */
+  overflow: hidden;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+  text-decoration: none; /* Rimuove il sottolineato del link */
+  color: inherit; /* Mantiene il colore del testo */
+  display: block; /* Rende il link un blocco cliccabile */
+  opacity: 0; /* Nasconde il box finché non si carica l'immagine */
+  transform: scale(1); /* Stato iniziale */
+  transition: transform 0.3s ease-in-out, opacity 0.5s ease-in-out;
+}
+
+/* Effetto zoom al passaggio del mouse */
+.card-vertical_M23:hover {
+  transform: scale(1.05); /* Zoom leggero sull'intero riquadro */
+}
+
+/* Effetto bordo dinamico */
+.card-vertical_M23::before {
+  content: "";
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 300%;
+  height: 300%;
+  border-radius: 50%;
+  background: conic-gradient(#c0aa84, #ffffff, #c0aa84, #ffffff, #c0aa84);
+  z-index: 0; /* Sotto tutti gli altri elementi */
+  animation: rotateGradient_M23 8s linear infinite;
+}
+
+@keyframes rotateGradient_M23 {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Bordo interno */
+.card-vertical_M23::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 97%;
+  height: 95%;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: inherit; /* Eredita il bordo arrotondato dal padre */
+  transform: translate(-50%, -50%);
+  z-index: 2; /* Sopra .card-vertical_M23::before, ma sotto l'immagine */
+}
+
+/* Box immagine */
+.image-box-vertical_M23 {
+  width: 100%;
+  height: 100%; /* Altezza uguale al contenitore */
+  border-radius: inherit; /* Eredita il bordo arrotondato dal padre */
+  overflow: hidden; /* Assicura che lo zoom non esca dai bordi */
+}
+
+.image-box-vertical_M23 img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 98%; /* Dimensione leggermente più grande per garantire il taglio */
+  height: 97%; /* Dimensione leggermente più grande per garantire il taglio */
+  object-fit: cover; /* Copre l'area senza deformarsi */
+  filter: brightness(80%); /* Riduce la luminosità */
+  border-radius: inherit; /* Eredita il bordo arrotondato dal padre */
+}
+
+.no-image {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f0f0f0;
+  color: #666;
+  font-size: 14px;
+  border-radius: inherit; /* Eredita il bordo arrotondato dal padre */
+}
+
+/* Box testo completamente indipendente ma centrato */
+.text-box-vertical_M23 {
+  visibility: hidden; /* Nasconde il testo fino a quando non è pronto */
+  position: absolute;
+  top: 50%; /* Centrato verticalmente */
+  left: 50%; /* Centrato orizzontalmente */
+  transform: translate(-50%, -50%); /* Perfettamente centrato */
+  background: rgba(125, 125, 125, 0.5);
+  padding: 5px 8px;
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  text-align: center;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 3; /* Testo sopra l'immagine */
+  width: 100%; /* Espande in base al contenitore */
+  max-width: 60%; /* Limita la larghezza massima */
+  box-sizing: border-box;
+  white-space: normal;
+}
+
+.text-content-vertical_M23 {
+  font-size: clamp(1rem, 4vw, 2rem); /* Dimensione adattiva */
+  line-height: 1.1;
+  text-align: center;
+  word-break: keep-all; /* Impedisce lo spezzamento delle parole */
+  overflow-wrap: break-word; /* Consente lo spezzamento solo quando necessario */
+}
+
+/* Responsive Design */
+
+/* Personalizzazione per desktop */
+@media (min-width: 1025px) {
+  .card-vertical_M23 {
+    width: 60%; /* Larghezza del 60% dello schermo */
+    margin: 0 auto; /* Centra il box */
+  }
+}
+
+/* Personalizzazione per dispositivi mobili */
+@media (max-width: 768px) {
+  .card-vertical_M23 {
+    width: 100%; /* Larghezza del 100% dello schermo */
+  }
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const cards = document.querySelectorAll(".card-vertical_M23");
+
+  // Mostra i box solo dopo il caricamento delle immagini
+  function showCard(card) {
+    card.style.opacity = "1";
+    adjustTextSize(card.querySelector(".text-box-vertical_M23"));
+  }
+
+  cards.forEach((card) => {
+    const img = card.querySelector("img");
+    if (img.complete) {
+      showCard(card);
+    } else {
+      img.addEventListener("load", () => showCard(card));
+    }
+  });
+
+  function adjustTextSize(textBox) {
+    const textContent = textBox.querySelector(".text-content-vertical_M23");
+    if (!textContent) return;
+
+    const boxWidth = textBox.clientWidth * 0.95;
+    const boxHeight = textBox.clientHeight * 0.95;
+
+    let fontSize = 24;
+    const minFontSize = 8;
+
+    textContent.style.fontSize = "";
+
+    while (
+      (textContent.scrollWidth > boxWidth || textContent.scrollHeight > boxHeight) &&
+      fontSize > minFontSize
+    ) {
+      fontSize -= 1;
+      textContent.style.fontSize = `${fontSize}px`;
+    }
+
+    if (fontSize <= minFontSize && (textContent.scrollWidth > boxWidth || textContent.scrollHeight > boxHeight)) {
+      textBox.style.overflow = "auto";
+    } else {
+      textBox.style.overflow = "hidden";
+    }
+
+    textBox.style.visibility = "visible";
+  }
+
+  window.addEventListener("resize", () => {
+    cards.forEach((card) => {
+      const textBox = card.querySelector(".text-box-vertical_M23");
+      adjustTextSize(textBox);
+    });
+  });
+});
+</script>

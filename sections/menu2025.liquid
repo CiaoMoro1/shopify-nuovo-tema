@@ -1,0 +1,141 @@
+{% schema %}
+{
+  "name": "Menu con Immagini",
+  "settings": [
+    { "type": "header", "content": "Impostazioni Menu" },
+    {
+      "type": "select",
+      "id": "title_tag",
+      "label": "Tag del Titolo",
+      "default": "h2",
+      "options": [
+        { "value": "h1", "label": "H1" },
+        { "value": "h2", "label": "H2" },
+        { "value": "h3", "label": "H3" },
+        { "value": "p", "label": "Paragrafo" }
+      ]
+    },
+    { "type": "text", "id": "section_title", "label": "Titolo della Sezione", "default": "Il nostro menu" }
+  ],
+  "blocks": [
+    {
+      "type": "menu_item",
+      "name": "Voce del Menu",
+      "settings": [
+        { "type": "image_picker", "id": "item_image", "label": "Immagine" },
+        { "type": "text", "id": "item_title", "label": "Titolo", "default": "Nome voce" },
+        { "type": "text", "id": "item_alt_text", "label": "Testo Alternativo", "default": "Descrizione immagine" },
+        { "type": "url", "id": "item_link", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "Menu con Immagini", "category": "Custom" }
+  ]
+}
+{% endschema %}
+
+
+<style>
+.menu-container { width: 100%; display: flex; justify-content: center; }
+.menu-wrapper { max-width: 90%; margin: auto; display: flex; flex-direction: column; align-items: center; }
+
+.menu-grid {
+  display: grid;
+  gap: 10px;
+  padding: 5px;
+  justify-content: center;
+  grid-template-columns: repeat(2, 1fr);
+}
+@media (min-width: 769px) {
+  .menu-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+.menu-item {
+  position: relative;
+  width: 100%;
+  max-width: 250px;
+  aspect-ratio: 1/1;
+  border-radius: 20%;
+  overflow: hidden;
+  background: linear-gradient(45deg, #c0aa84, #ffffff, #c0aa84);
+  padding: 5px;
+  box-sizing: border-box;
+  display: block;
+}
+
+.menu-item img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: inherit;
+  aspect-ratio: 1/1;
+}
+
+.menu-text-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80%;
+  background: rgba(0, 0, 0, 0.4);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  text-align: center;
+  font-family: 'Quattrocento Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.2;
+  border: 1px solid rgba(255,255,255,0.8);
+  box-sizing: border-box;
+}
+
+.menu-title {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 10px;
+  padding: 25px;
+  font-size: clamp(18px, 5vw, 28px);
+}
+
+@supports (-webkit-touch-callout: none) {
+  .menu-text-box {
+    font-size: min(16px, 5vw);
+  }
+}
+</style>
+
+<div class="menu-container">
+  <div class="menu-wrapper">
+    {% assign valid_title_tags = 'h1,h2,h3,h4,h5,h6,p' | split: ',' %}
+    {% if valid_title_tags contains section.settings.title_tag %}
+      <{{ section.settings.title_tag }} class="menu-title">{{ section.settings.section_title }}</{{ section.settings.title_tag }}>
+    {% endif %}
+    <div class="menu-grid">
+      {% for block in section.blocks %}
+        <a href="{{ block.settings.item_link | append: '?nocol=1' }}" class="menu-item" rel="noopener noreferrer" onclick="this.href=this.href.replace('?nocol=1', '')">
+          {% if block.settings.item_image != blank %}
+            <img
+              src="{{ block.settings.item_image | img_url: '200x200' }}"
+              alt="{{ block.settings.item_alt_text | escape }}"
+              width="200"
+              height="200"
+              loading="lazy"  <!-- Aggiunto lazy load -->
+              fetchpriority="low"  <!-- Impostato per le immagini non critiche -->
+              decoding="async">
+          {% else %}
+            <div style="min-height: 200px; background: #eee;"></div>
+          {% endif %}
+          <div class="menu-text-box">{{ block.settings.item_title }}</div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,94 @@
+<div class="customCollage">
+  {% for blocks in section.blocks %}
+<a href="{{blocks.settings.image_link}}">
+  <div class="customBlock">
+	<img class="collageImage" src="{{blocks.settings.collage_image | img_url: 'large' }} ">
+  </div>
+</a>
+   {% endfor %}
+</div>
+<style>
+
+.customBlock{
+max-width: 1000px;
+width: 100%;
+   height: 100%;
+	}  
+      .customCollage{
+       margin: auto;
+       max-width: 70%;
+       width: 70%;
+       height: 100%;
+       display: grid;
+       gap: 0px;
+       grid-template-columns: repeat(3, 1fr);
+       grid-template-rows: auto;
+      }
+       .collageImage{
+        position: relative;
+        width: 100%;
+        height: 100%;
+         object-fit: cover;
+        opacity: 80%;
+        }
+        .collageImage:hover{
+        transform:scale(1.05);
+        transition:transform 0.2s;
+        z-index:1;
+        cursor:pointer;
+        box-shadow: 0 0 20px black ;
+        opacity: 100%
+       }
+
+@media screen and (max-width:500px){
+  .customCollage{
+   max-width: 100%;
+   width: 100%;
+   height: 100%;
+   display: grid;
+   gap: 0px;
+   grid-template-columns: repeat(2, 1fr);
+   grid-template-rows: repeat(2, 1fr);
+  }
+  }
+
+
+
+
+</style>
+{% schema %}
+  {
+    "name": "Custom Collage",
+    "settings": [],
+    "blocks": [
+        {
+        "name": "collage image",
+		"type": "collage_image",
+    	"settings": [	
+
+			{
+			"type": "url",
+			"id": "image_link",
+    		"label": "Image link"
+			},
+			{
+			"type": "image_picker",
+			"id": "collage_image",
+    		"label": "collage image"
+			}
+			] 
+		}
+	],
+	"presets":	[
+		{
+		"name": "Custom Collage"
+		}
+		]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

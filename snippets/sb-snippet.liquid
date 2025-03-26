@@ -1,0 +1,12 @@
+{% include 'Secomapp-Amp' %}
+{% capture sb-i %}{% include 'Secomapp-Instant-Page' %}{% endcapture %}{% unless sb-i contains 'Liquid error' %}{% include 'Secomapp-Instant-Page' %}{% endunless %}
+
+
+
+
+
+
+{% capture js %}{% render 'sb-json' %}{% endcapture %}{% unless js contains 'Liquid error' %}{% render 'sb-json' %}{% endunless %}
+
+{% capture gsc %}{% render 'sb-gsc' %}{% endcapture %}{% unless gsc contains 'Liquid error' %}{% render 'sb-gsc' %}{% endunless %}
+

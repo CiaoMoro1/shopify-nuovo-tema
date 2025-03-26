@@ -1,0 +1,166 @@
+{% style %}
+ /* Stili globali per il megamenu */
+.clean-mega-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2.5rem;
+  padding: 2.5rem;
+}
+
+.mega-menu__card-inner {
+  background: rgba(245, 245, 245, 0.5);
+  border-radius: 22px;
+  padding: 1.25rem 1.5rem;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: relative; /* Necessario per il posizionamento del pseudo-elemento */
+}
+
+.mega-menu__card-outer {
+  position: relative; /* Necessario per il posizionamento del pseudo-elemento */
+  padding: 3px; /* Bordo esterno per fare un po' di spazio */
+  border-radius: 22px; /* Arrotondamento della card esterna */
+  overflow: hidden; /* Nasconde la parte che fuoriesce dal border-radius */
+}
+
+.mega-menu__card-outer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, #c0aa84, #ffffff, #c0aa84); /* Gradiente */
+  z-index: -1; /* Lo mettiamo dietro il contenuto */
+  border-radius: 22px; /* Arrotondamento del bordo gradiente */
+}
+
+.mega-menu__link {
+  font-weight: 700;
+  font-size: 2rem;
+  color: var(--color-foreground);
+  text-decoration: none;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.mega-menu__link:hover {
+  text-decoration: underline;
+}
+
+.mega-menu__sublist {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mega-menu__sublist li {
+  margin: 0.35rem 0;
+}
+
+.mega-menu__sublist a {
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: var(--color-foreground);
+  opacity: 0.85;
+  text-decoration: none;
+}
+
+.mega-menu__sublist a:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+{% endstyle %}
+
+{% comment %}
+  Renders a megamenu for the header without images, with double-layered card effect and gradient border.
+  Usage:
+  {% render 'header-mega-menu-extended' %}
+{% endcomment %}
+
+<nav class="header__inline-menu">
+  <ul class="list-menu list-menu--inline" role="list">
+    {%- for link in section.settings.menu.links -%}
+      <li>
+        {%- if link.links != blank -%}
+          <!-- Mega menu con sottomenu -->
+          <header-menu>
+            <details id="Details-HeaderMenu-{{ forloop.index }}" class="mega-menu">
+              <summary
+                id="HeaderMenu-{{ link.handle }}"
+                class="header__menu-item list-menu__item link focus-inset"
+              >
+                <span
+                  {%- if link.child_active %}class="header__active-menu-item"{% endif %}
+                >
+                  {{- link.title | escape -}}
+                </span>
+                {% render 'icon-caret' %}
+              </summary>
+
+              <!-- Contenuto del mega menu -->
+              <div
+                id="MegaMenu-Content-{{ forloop.index }}"
+                class="mega-menu__content color-{{ section.settings.menu_color_scheme }} gradient motion-reduce global-settings-popup"
+                tabindex="-1"
+              >
+                <ul class="mega-menu__list page-width clean-mega-grid" role="list">
+                  {%- for childlink in link.links -%}
+                    <li class="mega-menu__item">
+                      <div class="mega-menu__card-outer">
+                        <div class="mega-menu__card-inner">
+                          <!-- Link principale -->
+                          <a
+                            id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}"
+                            href="{{ childlink.url }}"
+                            class="mega-menu__link mega-menu__link--level-2 link{% if childlink.current %} mega-menu__link--active{% endif %}"
+                            {% if childlink.current %}aria-current="page"{% endif %}
+                          >
+                            {{ childlink.title | escape }}
+                          </a>
+
+                          <!-- Sotto-link -->
+                          {%- if childlink.links != blank -%}
+                            <ul class="mega-menu__sublist" role="list">
+                              {%- for grandchildlink in childlink.links -%}
+                                <li>
+                                  <a
+                                    id="HeaderMenu-{{ link.handle }}-{{ childlink.handle }}-{{ grandchildlink.handle }}"
+                                    href="{{ grandchildlink.url }}"
+                                    class="mega-menu__link link{% if grandchildlink.current %} mega-menu__link--active{% endif %}"
+                                    {% if grandchildlink.current %}aria-current="page"{% endif %}
+                                  >
+                                    {{ grandchildlink.title | escape }}
+                                  </a>
+                                </li>
+                              {%- endfor -%}
+                            </ul>
+                          {%- endif -%}
+                        </div>
+                      </div>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              </div>
+            </details>
+          </header-menu>
+        {%- else -%}
+          <!-- Link semplice senza sottomenu -->
+          <a
+            id="HeaderMenu-{{ link.handle }}"
+            href="{{ link.url }}"
+            class="header__menu-item list-menu__item link link--text focus-inset"
+            {% if link.current %}aria-current="page"{% endif %}
+          >
+            <span
+              {%- if link.current %}class="header__active-menu-item"{% endif %}
+            >
+              {{- link.title | escape -}}
+            </span>
+          </a>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ul>
+</nav>

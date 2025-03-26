@@ -1,0 +1,239 @@
+<div class="custom-grid-section">
+  <div class="grid">
+    {% for block in section.blocks %}
+      <div class="grid-item hidden">
+        <a href="{{ block.settings.link }}">
+          <div class="image-container" data-interval="{{ section.settings.image_interval }}">
+            <img src="{{ block.settings.image | img_url: 'large' }}" alt="{{ block.settings.title }}" class="image1">
+            <img src="{{ block.settings.image2 | img_url: 'large' }}" alt="{{ block.settings.title }}" class="image2">
+          </div>
+        </a>
+        <div class="text-container">
+          <h3>{{ block.settings.title }}</h3>
+          <p>{{ block.settings.description }}</p>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+  .custom-grid-section {
+    padding: 20px;
+
+  }
+
+  .custom-grid-section .grid {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .custom-grid-section .grid-item {
+    background-color: transparent;
+    padding: 0;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .custom-grid-section .grid-item.visible {
+    animation: fadeInBounce 1s forwards;
+  }
+
+  .custom-grid-section .image-container {
+    width: 100%;
+    padding-top: 100%; /* Ratio 1:1 */
+    position: relative;
+    overflow: hidden;
+  }
+
+  .custom-grid-section .image-container img {
+    border-radius: 5%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.5s ease-in-out; /* Durata della transizione più breve */
+  }
+
+  .custom-grid-section .image-container img.image2 {
+    opacity: 0;
+  }
+
+  .custom-grid-section .text-container {
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.8); /* Opacità del contenuto */
+  }
+
+  .custom-grid-section .text-container h3,
+  .custom-grid-section .text-container p {
+    margin: 0;
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  @media (min-width: 1024px) {
+    .custom-grid-section .grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @keyframes fadeInBounce {
+    0% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    60% {
+opacity: 0.5;
+      transform: translateY(-5px);
+    }
+    80% {
+ 
+      transform: translateY(2px);
+    }
+    100% {
+    opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .hidden {
+    visibility: hidden;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var imageContainers = document.querySelectorAll('.custom-grid-section .image-container');
+    var gridItems = document.querySelectorAll('.custom-grid-section .grid-item');
+    var interval = parseInt(document.querySelector('.custom-grid-section .image-container').getAttribute('data-interval')) * 1000;
+    var currentIndex = 0;
+
+    // Funzione per cambiare le immagini ciclicamente
+    function changeImage() {
+      var container = imageContainers[currentIndex];
+      var image1 = container.querySelector('.image1');
+      var image2 = container.querySelector('.image2');
+
+      if (image1.style.opacity == '1' || image1.style.opacity === '') {
+        image1.style.opacity = '0';
+        image2.style.opacity = '1';
+      } else {
+        image1.style.opacity = '1';
+        image2.style.opacity = '0';
+      }
+
+      currentIndex = (currentIndex + 1) % imageContainers.length;
+      setTimeout(changeImage, interval);
+    }
+
+    // Funzione per mostrare i grid-item con effetto fade-in e rimbalzo in sequenza
+    function showGridItems() {
+      gridItems.forEach(function(item, index) {
+        setTimeout(function() {
+          item.classList.remove('hidden');
+          item.classList.add('visible');
+        }, index * 200); // Ritardo di 200ms tra un elemento e l'altro
+      });
+    }
+
+    showGridItems();
+    setTimeout(changeImage, interval);
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Custom Grid Section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "image_interval",
+      "label": "Image Change Interval (seconds)",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "default": 2
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection Box",
+      "settings": [
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link to Collection"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "First Image"
+        },
+        {
+          "type": "image_picker",
+          "id": "image2",
+          "label": "Second Image"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "textarea",
+          "id": "description",
+          "label": "Description"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom Grid Section",
+      "category": "Custom",
+      "settings": {
+        "image_interval": 2
+      },
+      "blocks": [
+        {
+          "type": "collection",
+          "settings": {
+            "link": "#",
+            "image": "",
+            "image2": "",
+            "title": "Title 1",
+            "description": "Description 1"
+          }
+        },
+        {
+          "type": "collection",
+          "settings": {
+            "link": "#",
+            "image": "",
+            "image2": "",
+            "title": "Title 2",
+            "description": "Description 2"
+          }
+        },
+        {
+          "type": "collection",
+          "settings": {
+            "link": "#",
+            "image": "",
+            "image2": "",
+            "title": "Title 3",
+            "description": "Description 3"
+          }
+        }
+        // Aggiungi altri blocchi di preset se necessario
+      ]
+    }
+  ]
+}
+{% endschema %}

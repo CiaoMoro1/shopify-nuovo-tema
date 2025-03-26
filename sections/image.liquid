@@ -1,0 +1,214 @@
+<!-- Markup della sezione -->
+<div class="image-container">
+    {% for block in section.blocks %}
+        <a href="{{ block.settings.image_url }}" class="image-link">
+            <div class="image-wrapper" style="animation-delay: {{ block.settings.animation_delay }}s;">
+                <span class="overlay-text {{ block.settings.text_position }}" data-text="{{ block.settings.image_text }}"></span>
+                <img src="{{ block.settings.image | img_url: '1200x1200' }}" alt="{{ block.settings.alt_text }}" />
+            </div>
+        </a>
+    {% endfor %}
+</div>
+
+<!-- Stili CSS -->
+<style>
+  .image-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 50%;
+      min-height: 100vh;
+      padding: 10px 0;
+      margin: 0 auto;
+  }
+
+  .image-link {
+      display: block;
+      text-decoration: none;
+      background: transparent url('') no-repeat center center;
+      background-size: cover;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      z-index: 1;
+      transition: background-color 0.3s ease;
+  }
+
+  .image-link:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .image-wrapper {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+      margin: 0 auto;
+  }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  .image-wrapper img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.3s;
+  }
+
+  .image-wrapper:hover img {
+      transform: scale(1.1);
+  }
+
+  .overlay-text {
+      position: absolute;
+      color: white;
+      background-color: rgba(255, 239, 213, 0.5);
+      padding: 5px 10px;
+      border-radius: 5px;
+      transform: translate(-50%, -50%);
+      z-index: 1;
+      font-size: 2vw;
+      font-family: 'Arial', sans-serif;
+      display: inline-block;
+      overflow: hidden;
+      white-space: nowrap;
+  }
+
+  .overlay-text::before {
+      content: attr(data-text);
+      position: absolute;
+      left: 0;
+      animation: type-text 0.5s steps(1, end) forwards;
+      visibility: hidden;
+  }
+
+  @keyframes type-text {
+      from {
+          width: 0;
+      }
+      to {
+          width: 100%;
+      }
+  }
+
+  .overlay-text.top-left { top: 10%; left: 10%; }
+  .overlay-text.top-right { top: 10%; right: 10%; }
+  .overlay-text.bottom-left { bottom: 10%; left: 10%; }
+  .overlay-text.bottom-right { bottom: 10%; right: 10%; }
+  .overlay-text.center { top: 80%; left: 50%; }
+
+  @media (max-width: 768px) {
+      .overlay-text {
+        font-size: 16px;
+        max-width: 100%;
+        white-space: normal;
+        text-align: center;
+      }
+      .image-container {
+          padding: 20px 0;
+          width: 95%;
+          min-height: auto;
+      }
+  }
+</style>
+
+<!-- Script per animazione di digitazione -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var textElements = document.querySelectorAll('.overlay-text[data-text]');
+
+    textElements.forEach(function(el) {
+        var text = el.getAttribute('data-text');
+        var delay = 50;  // Milliseconds delay between letters
+        var initialDelay = 300;  // Initial delay before typing starts
+        var currentText = '';
+        var index = 0;
+
+        function typeText() {
+            // Make sure the ::before element is hidden while typing
+            el.style.visibility = 'visible';
+            
+            if (index < text.length) {
+                currentText += text[index];
+                el.textContent = currentText;
+                index++;
+                setTimeout(typeText, delay);
+            }
+        }
+
+        setTimeout(typeText, initialDelay);
+    });
+});
+</script>
+
+<!-- Definizione dello schema per la personalizzazione -->
+{% schema %}
+{
+  "name": "Box Immagine",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Immagine",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Carica Immagine"
+        },
+        {
+          "type": "text",
+          "id": "alt_text",
+          "label": "Testo Alternativo",
+          "default": "Descrizione immagine"
+        },
+        {
+          "type": "url",
+          "id": "image_url",
+          "label": "URL dell'immagine"
+        },
+        {
+          "type": "text",
+          "id": "image_text",
+          "label": "Testo sopra l'immagine",
+          "default": "Inserisci il tuo testo qui"
+        },
+        {
+          "type": "select",
+          "id": "text_position",
+          "label": "Posizione del testo",
+          "options": [
+            { "value": "top-left", "label": "In alto a sinistra" },
+            { "value": "top-right", "label": "In alto a destra" },
+            { "value": "bottom-left", "label": "In basso a sinistra" },
+            { "value": "bottom-right", "label": "In basso a destra" },
+            { "value": "center", "label": "Centrato" }
+          ],
+          "default": "center"
+        },
+        {
+          "type": "number",
+          "id": "animation_delay",
+          "label": "Ritardo dell'animazione (secondi)",
+          "default": 0
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "image",
+      "category": "Personalizzato"
+    }
+  ],
+  "max_blocks": 1
+}
+{% endschema %}

@@ -1,0 +1,167 @@
+{% schema %}
+{
+  "name": "SezioneNatale",
+  "settings": [
+    {
+      "type": "text",
+      "id": "metal_text",
+      "label": "Testo",
+      "default": "Auguri di Buon Natale!"
+    },
+    {
+      "type": "image_picker",
+      "id": "cta_image",
+      "label": "Immagine"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Link del bottone"
+    },
+    {
+      "type": "text",
+      "id": "cta_button_text",
+      "label": "Testo del bottone",
+      "default": "Scopri di più"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sezione Natale",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
+
+<style>
+/* Importa il font "Mountains of Christmas" da Google Fonts */
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.horizontal-center {
+  text-align: center;
+  border-radius: 20px;
+  width: 55%;
+  margin: 0 auto;
+  background: linear-gradient(75deg, #8b0000, #8b0000, #ff0000, #8b0000, #8b0000);
+  background-size: 300% 300%;
+  animation: gradientShift 8s infinite;
+  padding: 10px 0;
+}
+
+.metallized-text {
+  font-size: 4rem;
+  display: inline-block;
+  background: linear-gradient(45deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 3px 3px 10px rgba(0, 0, 0, 0);
+  position: relative;
+  padding: 10px;
+  animation: gradientShift 5s infinite;
+word-wrap: break-word; /* Aggiungi questa proprietà */
+    white-space: normal; /* Aggiungi questa proprietà */
+text-align: center;
+}
+
+.image-button-container {
+  border-radius: 20px;
+  width: 100%;
+  position: relative;
+  margin: 0 auto;
+  margin-bottom: 40px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.image-button-container:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.image-button-container img {
+  width: 100%;
+  display: block;
+}
+
+.button-under-image {
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #b30000;
+  color: #fff;
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.button-under-image:hover {
+  background-color: #7c0000;
+}
+
+.fade-in {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: opacity 1s ease-out, visibility 1s ease-out, transform 1s ease-out;
+}
+
+@media (max-width: 768px) {
+  .metallized-text {
+    font-size: 2.5rem; /* Riduci la dimensione del font su mobile */
+        word-wrap: break-word;
+        white-space: normal;
+        line-height: 1.2; /* Migliora la gestione dell'interlinea */
+  }
+  .horizontal-center {
+    width: 95%;
+  }
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", async function() {
+  await animateElement('.horizontal-center', 0);
+  await animateElement('.metallized-text', 500);
+  await animateElement('.image-button-container', 500);
+});
+
+function animateElement(selector, delay) {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      const element = document.querySelector(selector);
+      if (element) {
+        element.style.opacity = "1";
+        element.style.transform = "translateY(0)";
+        element.style.visibility = "visible";
+      }
+      resolve();
+    }, delay);
+  });
+}
+</script>
+
+<div class="horizontal-center fade-in">
+  <h2 class="metallized-text fade-in">{{ section.settings.metal_text }}</h2>
+  {% if section.settings.cta_image %}
+  <div class="image-button-container fade-in">
+    <a href="{{ section.settings.cta_link }}">
+      <img src="{{ section.settings.cta_image | img_url: '800x800' }}" alt="Immagine promozionale">
+      {% if section.settings.cta_button_text %}
+      <span class="button-under-image">{{ section.settings.cta_button_text }}</span>
+      {% endif %}
+    </a>
+  </div>
+  {% endif %}
+</div>

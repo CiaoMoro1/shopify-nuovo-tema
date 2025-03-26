@@ -1297,6 +1297,24 @@
         "default": "#333333"
       }
     ]
-  }
-
+},
+{
+  "name": "Performance",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "lazyload_images",
+      "default": true,
+      "label": "Lazy load immagini",
+      "info": "Attiva il caricamento intelligente delle immagini usando IntersectionObserver."
+    },
+    {
+      "type": "checkbox",
+      "id": "defer_non_critical_js",
+      "default": true,
+      "label": "Differisci JS non essenziale",
+      "info": "Usa requestIdleCallback per script secondari o tracciamenti."
+    }
+  ]
+}
 ]

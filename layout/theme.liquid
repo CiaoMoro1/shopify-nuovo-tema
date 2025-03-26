@@ -231,6 +231,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     </script>
   	{%- if dropinblog == 1 -%}{{ dropinblog_head_bottom }}{%- endif -%}
 
+
+
+
+<!-- GLightbox -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
+<script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js" defer></script>
+
+
 </head> 
 
   <body class="gradient">
@@ -325,24 +333,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                {% endif %}
                <!-- WPD End -->
     
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.css">
 
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
 
-    <script type="text/javascript">
-      $('[data-fancybox="images"]').fancybox({
-        buttons : [ 
-          'slideShow',
-          'share',
-          'zoom',
-          'fullScreen',
-          'close'
-        ],
-        thumbs : {
-          autoStart : true
-        }
-      });
     </script>
     
     <script src="{{ 'tema.js' | asset_url }}" defer></script>

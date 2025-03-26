@@ -899,3 +899,52 @@ class VariantRadios extends VariantSelects {
 }
 
 customElements.define('variant-radios', VariantRadios);
+
+// 🔁 Lazy load immagini e sezioni con IntersectionObserver
+if ('IntersectionObserver' in window) {
+  document.querySelectorAll('[data-lazy]').forEach((el) => {
+    const observer = new IntersectionObserver((entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const target = entry.target;
+
+          // Lazy load immagini
+          if (target.tagName === 'IMG' && target.dataset.src) {
+            target.src = target.dataset.src;
+            if (target.dataset.srcset) {
+              target.srcset = target.dataset.srcset;
+            }
+            target.removeAttribute('data-src');
+          }
+
+          // Lazy load elementi generici
+          if (target.dataset.lazyClass) {
+            target.classList.add(target.dataset.lazyClass);
+          }
+
+          obs.unobserve(target);
+        }
+      });
+    }, { rootMargin: '200px' });
+
+    observer.observe(el);
+  });
+}
+
+// 🕐 JS non prioritario con requestIdleCallback
+if ('requestIdleCallback' in window) {
+  requestIdleCallback(() => {
+    // Inizializzazioni non urgenti
+    if (window.initAnalytics) {
+      window.initAnalytics(); // esempio
+    }
+    // ...altre azioni leggere post-interazione
+  });
+}
+
+const lightbox = GLightbox({
+  selector: '.glightbox',
+  touchNavigation: true,
+  loop: true,
+  zoomable: true
+});
